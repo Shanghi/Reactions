@@ -1,0 +1,20 @@
+## Interface: 20400
+## Title: Reactions (Options)
+## Author: Pyralis
+## Version: 1.24
+## Notes: The options window for Reactions - this only loads when you open it with /reactions or /rs.
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: Reactions
+
+RSGUI_Init.lua
+RSGUI_Main.lua
+
+RSGUI_Chat.lua
+RSGUI_Groups.lua
+RSGUI_Options.lua
+RSGUI_Reactions.lua
+RSGUI_Search.lua
+RSGUI_Tags.lua
+
+RSGUI_Loaded.lua

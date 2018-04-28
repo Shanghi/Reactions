@@ -1,0 +1,224 @@
+1.24 (4/9/18):
+	* Added a search panel where you can search for text in your reactions/tags and either go to them or just edit them there.
+	* Added a history button [<] to show the last 10 things opened.
+	* Added the "Environment (Slime)" event for someone being damaged by slime.
+	* Added environment death events like "Environment (Lava - Death)" for yourself and group members.
+	* Added most types of spell effect events (bandage, banish, bleed, charm, disarm, disorient, fear, freeze, immunity, polymorph, root, sapped, shield, silence, sleep, snare, stun) to replace the old incapacitated and silenced events. For the player, the (Begin) events only happen when there's no other spell effect of that type applied to them yet and the (End) events only happen when the final one left is over. For others, (Begin) happens when any spell of that kind is put on them even if they're in that condition already and (End) happens when any spell of that kind is over.
+	* Added reaction conditions: in friendly area, in hostile area, in contested area, in sanctuary area.
+	* Added reaction conditions for spell ranks and if you are (or aren't) affected by spell effects like stun, bleeding, polymorph, etc.
+	* Added the <spell_rank> and <extra_spell_rank> variables to get text like "rank 3" from the action's spell. You can also add a name on the end like <spell_rank:Healing Touch> to get the highest rank you have in your spellbook.
+	* Added the very important variable <random_tutorial_message>.
+	* Added mousewheel support to things that have scroll bars (like showing all tags or having a lot of possible reactions).
+
+1.23 (6/8/16):
+   * Changed reactions using the Group chat type to not be randomly picked when you're not in a group.
+   * Changed boss detection - even though TBC normal/heroic instance "bosses" aren't technically bosses, they count as one now in reaction conditions and in the boss killing blow event.
+   * Removed the "Caster/Target is maybe boss" condition.
+
+1.22 (5/26/16):
+   * Fixed spell completion detection for servers with proper spell landing mechanics. On messed up servers, the spell result (damage done/was resisted/etc) is known immediately after the spell success event. On fixed servers, the result may not be known until a few tenths of a second later.
+   * Fixed a few more automatic a/an corrections.
+   * Fixed the <race:unitID> and <class:unitID> variables to show a mob's creature type/classification like the normal <target_race> and <target_class> variables do.
+   * Added being able to drag and drop spells or inventory items to the window (in any section) to create a spell of it.
+   * Added events: Consume Alcohol, Consume Drink, Consume Food - unfortunately the name of drink/food used isn't known.
+   * Added event: Duel Request.
+   * Changed some minor GUI things like adding a few more tooltips.
+
+1.21 (5/5/16):
+   * Added more character reaction conditions: while mounted, while flying, while swimming, while stealthed, while at high/medium/low health, while at high/medium/low power (meaning mana, energy, or rage). The option section's Low Health/Mana (Begin/End) settings decide what's considered low and high.
+   * Added role items to be able to set a reaction to only happen if you're wearing a specific thing. First, set an item in the option section. Then, when setting up a reaction, there will be an icon for you to select any of the items - this won't be shown if no items are set up.
+
+1.20 (5/4/16):
+   * Fixed reaction form conditions for ghost wolf and shadowform.
+   * Changed the reaction language and form/stance buttons to only be shown if usable and to only show what the class can use.
+
+1.19 (5/3/16):
+   * Fixed generic normal critical hit events to work with ranged attacks too.
+   * Fixed aura added/removed actions - previously it always thought they were yours.
+   * Added more reaction conditions so that the caster, group member, and target can be checked. The menu should only show condition submenus about the people involved in that action. For example, the "Your spell hit yourself" action won't show any of those conditions since they're irrelevant, but "Group member's spell hit someone else" would show Group Member and Target conditions.
+   * Added conditions about whether the unit is your pet or a group member's pet.
+   * Added <number:* *> variable to get a random number between 2 values, like <number:1 100>
+   * Added variables like <target_class> and <extra_target_class> that were previously only for group member variables. To get the real value for them, they'll still need to be seen by being in your group, being looked at as a target, focus, or mouseover unit, or being targeted by your pet or the group member involved in the action.
+   * Changed <*_class> variables to show a classification (elite/boss/rare/etc) if they're a mob.
+   * Changed <*_race> variables to show a creature type (demon/undead/humanoid/etc) if they're a mob.
+   * Changed pets to now count as group members.
+
+1.18 (5/1/16):
+   * Separated the settings window into a load on-demand addon.
+   * Fixed reaction language options that were broken in the last update.
+   * Fixed some things to probably work with other client languages: group joining/leaving and world object opening events.
+   * Added reaction conditions:
+      - Groups: While group leader/assistant, While not group leader/assistant, While master looter, While not master looter
+      - Targets (Generic): Target is you, Target is not you, Target sex is <male/female/unknown>
+      - Targets (Players): Target is a player, Target is not on friends list, Target is not guild member, Target race is <race>
+      - Targets (Mobs): Target is <classification like boss/elite/rare>, Target type is <like humanoid/critter/demon> (English only)
+      - Times: During real time <morning/afternoon/evening/night>
+   * Added command: /reactions group <name> <"on"|"off">
+   * Added /rs command as a shortcut to /reactions
+   * Changed some settings window things:
+      - tags can be renamed and moved now
+      - tooltips are on non-obvious options
+      - events and actions with reactions are green instead of having * in front of them
+      - the reaction conditions icon will be green if everything is allowed or red if not, and unchecked menu items will be red (when reopened) to make them easier to find
+      - the reaction language option will only show possible choices for your character
+      - more small things like icons being changed and unusable events things being disabled/grayed out
+
+1.17 (4/27/16):
+   * Fixed focus events.
+   * Fixed a chat trigger error when setting a person cooldown on channels that don't have people as senders (like system and loot).
+   * Fixed some special cases I wasn't aware of for "You begin casting" spell actions.
+   * Added "Chat Command" channel option that acts like you've typed something normally and supports slash commands like "/invite" and "/bow" and "/script" and "/y Yelling!" Protected commands like /cast can't be used automatically. It defaults to using /say if nothing else is used. This makes many of the dropdown channels useless clutter now, so those were removed and any reaction using them should be converted automatically. <new> was also changed and any old reactions using something like <new:yell> will be converted to "<new:chat>/y " or just "<new>/y " depending on its default channel. This was a big change so hopefully everything it affects was thought of and fixed!
+   * Added the "Target is neutral" condition for non-hostile things that you can attack (like critters and teromoths outside Shattrath).
+   * Added a "Don't activate global cooldown on use" option to spell/event actions.
+   * Added possessive apostrophes to variables and tags to decide whether to add 's or just ' depending on if the last letter is S. Use it by adding 's to the end of any variable or tag name, like <target_name's>, <zone's>, or <name:focus's>. Shanghi would become Shanghi's while Pyralis would become Pyralis'. Grammarians are still split on if this rule should be followed!
+   * Added <spell_name_after:*> variable to only get part of a spell name. If you wanted to have generic messages for spells that have prefixes (like portal/teleport spells and Track <something> and Summon <something> and many more) but only need the ending (like just "Shattrath" instead of "Teleport: Shattrath"), you can use this. Replace the * with the part to skip (don't forget the ending space), like: <spell_name_after:Portal: > and <spell_name_after:Seal of >
+   * Changed the action names for events - each are now more specific instead of the generic "Event affects you/group member/non-grouped person."
+   * Changed chat trigger channels: Officer is now separate from Guild, Error (like "Out of range") is separated from System, and Action is now separate from Emote. Both Action and Emote will look the same, but Action is when they used a command like /bow - now you can't be tricked by something like "/emote spits on you." if you want to react to a real/direct emote action.
+
+1.16 (4/19/16):
+   * Fixed a case where using Tab to show a test message wouldn't let you save any further changes normally (without using Tab again) until the keyboard leaves that editbox.
+   * Added "Interrupting" event and the <extra_spell_name> and <extra_spell_link> variables to go with it. <spell_name>/<spell_link> is the spell used to interrupt (like Kick) and <extra_spell_name>/<extra_spell_link> is the spell that was interrupted. This event is for the one doing the interrupting, so picking "Event affects you" is for when you interrupt someone else.
+   * Added "Interrupted" event for when your spell gets interrupted so different messages can be used when it happens to you. "Interrupting" won't be used in this case.
+   * Added <eq_link_*> and <eq_name_*> variables to show a link or just the name of currently worn items. * can be: head, neck, shoulder, back, chest, shirt, tabard, wrist, hands, waist, legs, feet, finger1, finger2, trinket1, trinket2, mainhand, offhand, ranged, ammo
+   * Changed the "exclude guild members" and "exclude friends" chat trigger options by replacing them with a list of allowed groups: yourself, guild members, friends, others. The sender must be in at least one checked group for their message to be able to trigger a reaction.
+
+1.15 (4/17/16):
+   * Added * to the beginning of event names that have any reactions set.
+   * Added the "Opening World Object" event with <target_name> being what you started to open (doors/chests/etc).
+   * Added the "Loot (Autoloot)," "Loot (Open)," "Loot (Close)," and "Loot (Close Fast)" events. The close events won't be used if autolooting was. (Close Fast) happens when the loot window closes in 1 second or less. If separate events aren't wanted, you could make a 100% chance LootCloseFast Spell/Event reaction that redirects to the normal LootClose.
+   * Changed the "chance modifier" option to "chance multiplier." Instead of adding a set percentage to everything which would unbalance rare and common reactions, it multiplies it by this amount (a multiplier of 2 would double the chance and .5 would halve it).
+   * Changed fall timing to be 3 seconds in the air repeatedly instead of 2 then 3 then 4 then 5...
+
+1.14 (4/15/16):
+   * Fixed delayed scripts (like after <new 3:script>) - previously they happened instantly without waiting.
+   * Fixed "Spell/Event" redirected reactions originating from event reactions.
+   * Changed automatic times to choose a random second between the set minutes. Previously, a time between 1 and 3 could pick exactly 1, 2, or 3 minutes. Now, it will pick any second from 60 to 180 seconds.
+   * Added <random_target_icon> variable.
+   * Changed incapacitated and silenced spell detection to use IDs instead of names and added more of them.
+
+1.13 (2/11/16):
+   * Fixed a bug where logging in not wearing anything with durability could cause errors.
+   * Added actions for gaining auras - previously an aura being added to someone would count as that spell hitting them, but this causes problems because the caster isn't known. When possible, the hit actions should be used instead of these because aura events might not be received if the target has too many on them.
+
+1.12 (1/9/16):
+   * Fixed a/an grammar checking to not change words to lowercase and to handle numbers.
+   * Added "Durability (Low)" and "Durability (Broken)" events. A new setting decides when a low durability event happens.
+
+1.11 (11/16/15):
+   * Fixed the target name for some actions (like "You begin casting") when casting on someone you're not targeting (like a focused person).
+   * Added "On match, stop checking other triggers" option to chat triggers, to stop searching for more matching triggers after finding one. Trigger checking is now sorted alphabetically by name, so if the order matters you could name them with numbers like "1: The First Thing" and "2: Second Trigger."
+   * Added "Minimap Ping" event and the <direction> variable to go with it.
+   * Added bank and guild bank opening and closing events.
+   * Added miss types (miss/dodge/parry/immune/etc) to Allowed Conditions list on reactions.
+   * Added <pipe> variable to insert |.
+   * Added "Plain text links" option for chat trigger message matching to convert a full link into just [plain name text].
+   * You can now react to a specific creature dying by using their name as a spell name and using the "Your spell hit someone else" action. If a reaction is used, the generic death event won't be.
+   * Changed the Allowed Conditions list on reactions to use submenus now that there's so many of them.
+
+1.10 (10/24/15):
+   * Added actions for when someone's own periodic spell (like rejuvenation) hits themselves.
+   * Added events for low health and mana and options to set the percentages of when they happen - currently only for the player.
+   * Added "Full Rage" event for when someone has 100 rage.
+
+1.9 (10/15/15):
+   * Fixed detecting critical hits for healing spells.
+   * Fixed event targets so that group target variables like <group_name> and <group_class> will work (if they're in the group).
+   * Added a shout mode in the options to convert messages to all caps before using them.
+   * Added an "Ungrouped" option in the Groups list to toggle everything that doesn't have a group name.
+   * Added <new> "variable" that lets you do multiple actions in one reaction. You can also change channels: <new:yell> - and wait a certain amount of seconds: <new 3> or <new 1 5> for random time - or combine time and channel: <new 10:guild>
+   * Added UI_ERROR_MESSAGE messages (like "You don't have enough energy") to the System channel for chat triggers to watch for.
+   * Added Destroy Item and Repair Items events.
+   * Added Summon Accept (Before), Summon Accept (After), and Summon (Cancel) events.
+   * Added <summon_last_zone> and <summon_time_left> variables.
+   * Added <player_gold> (amount of gold coins) and <player_money_text> (full description like: 98 Gold, 48 Silver, 5 Copper) variables.
+   * Added <gender:unitid:male:female:other> and <group_gender:male:female:other> variables to insert customized text based on which gender they are.
+   * Added a "Has travel time" checkbox beside the "Your spell hit someone else" and "Your spell is dodged/resisted" actions to fix travel time spells counting as finished/hit as soon as the cast is done (and then again when they really hit).
+   * Moved the Combat Settings and Hit Settings of reactions to the Allowed Conditions list.
+   * Added with and without pet conditions for reactions.
+   * Added a language option for each reaction message - common, racial, or random.
+   * Added "aura removed" actions (from yourself, group member, or other person) for spells.
+   * Added a new command to force a reaction to be used: /reactions use <spell name> [target]
+     The target is optional. If the spell name has multiple words, then surround it in quotation marks, like: /reactions use "Healing Touch"
+   * Added a "Spell/Event" channel for reactions to use. This is similar to "/reaction use <spell>" but it will automatically send the target and other information like which action type to use. The <spell> variable will be the original spell. Chat triggers no longer have the "Use event/spell" option and any using that will be converted to using this new way. Chat triggers use the "Your spell hit someone else" action.
+   * Added <game_time_simple> and <real_time_simple> variables that don't have "night" in them so things like "Good ___" can work.
+      "early morning": 00:00 to 04:59
+      "morning"      : 05:00 to 11:59
+      "afternoon"    : 12:00 to 16:59
+      "evening"      : 17:00 to 23:59
+   * Changed the chat trigger's custom lua for matching edit box to be bigger than the custom lua for reaction one.
+
+1.8 (10/10/15):
+   * Fixed detecting raid target icons like {star} when using the alternative names like {rt1}, {rt2}, etc.
+   * Added "Changed Zone" and "Changed Subzone" events.
+   * Added "Logout (Countdown)" and "Logout (Instantly)" events.
+   * Added "Lose Control (Begin)/(Continuing)/(End)" events for when you lose control from things like fear while in combat. The Continuing event is handled like swimming or being underwater and has a chance to happen every second while control is lost.
+   * Added <spell_link> and <spell_name> variables to show a link or name of whatever triggered the reaction (if it exists).
+   * Added <make_spell_link:*> variable where replacing * with a spell ID will make a link of it.
+   * Added <player_name_title> variable to show the player's name including their title (if one is selected).
+   * Added <zone_full> to tell the current zone including the subzone, like "Terrace of Light in Shattrath City." If a subzone is blank or is the same name as the zone, then only the zone name is given.
+   * Added <coords> and <coords_exact> variables to show the player's coordinates on the map. <coords> rounds to whole numbers while <coords_exact> shows a decimal place. Instances can't give coordinates.
+   * Added a checklist of allowed conditions for each reaction, checking things like game time, location type, if the target is a friend/guild member/other, and group type. By default, every case is allowed. As an example, if a reaction should only be used at night, then you would uncheck morning, afternoon, and evening. The condition list is the cogwheel icon next to the combat/hit/form settings.
+
+1.7 (10/4/15):
+   * Fixed test messages to not be changed to lowercase.
+   * Fixed chat triggers where certain cases would cause the rest of the triggers to not be tested.
+   * Added the ability to have nested randomized (a|b|c) things, like: The (big (monster|rooster)|small (raccoon|lizard)) is a problem.
+   * Added time variables:
+      <game_time_general> and <real_time_general>:
+         "morning"  : 05:00 to 11:59
+         "afternoon": 12:00 to 16:59
+         "evening"  : 17:00 to 20:59
+         "night"    : 21:00 to 04:59
+      <game_time_description> and <real_time_description>:
+         "late at night"        : 00:15 to 04:59
+         "early in the morning" : 05:00 to 06:59
+         "in the morning"       : 07:00 to 11:44
+         "around noon"          : 11:45 to 12:14
+         "in the afternoon"     : 12:10 to 15:59
+         "in the late afternoon": 16:00 to 16:59
+         "in the evening"       : 17:00 to 19:59
+         "late in the evening"  : 20:00 to 20:59
+         "at night"             : 21:00 to 23:44
+         "around midnight"      : 23:45 to 00:14
+
+1.6 (9/28/15):
+   * Fixed automatically changing a/an for all the special cases I could think of (like an hour, a user, a unicorn).
+   * Fixed the "don't speak on public channels when stealthed in the world or a battleground" setting to save properly.
+   * Fixed "Killing Blow (Boss)" event - at least one person in the group/raid must be targeting it when it dies
+   * Fixed automatically split messages to handle item/spell/quest links properly.
+   * Added "Flight Master (Flying Begin)" and "Flight Master (Flying End)" events with <target_name> being the destination.
+   * Added the ignored channel ("Player is ignoring you.") to be handled by system chat triggers.
+   * Added <subzone> variable to get the player's sub-location, like "Valley of Strength" in Orgrimmar.
+   * Added more random variables if the addon SS_Data is enabled:
+      <random_item> <random_spell> <random_quest> (any in the game, not just ones you have)
+      <random_craft:*> (* is "all" to pick from all professions (except poison/beast/smelting because they don't fit in), or * is of these: alchemy, beast, cooking, enchanting, engineering, firstaid, jewelcrafting, leatherworking, poison, smelting, tailoring)
+      <random_talent:*> (* is "all" to pick from all classes, or a class name to pick from it. The talent points used will be random.)
+      <random_talent_min:*> (like random_talent, but the talent has 0 points in it)
+      <random_talent_max:*> (like random_talent, but the talent level is the maximum it can be)
+      <random_faction> <random_alliance_faction> <random_horde_faction> <random_neutral_faction>
+      <random_zone> <random_subzone> <random_full_zone> (full_zone gives both a zone and subzone in it, like: "Valley of Honor in Orgrimmar")
+      <random_instance_zone> <random_instance_full_zone>
+      <random_battleground_zone> <random_battleground_full_zone>
+      <random_world_zone> <random_world_full_zone>
+   * Changed <player_home> variable to <player_hearth> (<player_home> still works).
+   * Changed the settings window to close when pressing Escape.
+
+1.5 (1/23/14):
+   * Probably (it's rare to be able to test this) fixed the problem of using "limit once per aura" on some special spells like Static Shock where it would react even when getting hit doesn't cause an aura (like when a group member shocks you). The downside is that <target_name> isn't available now for these spells (but could be added back with more work that I'm too lazy to do now if ever needed).
+
+1.4 (1/16/14):
+   * Each reaction now has a hit-type setting for any, normal, critical, glancing, and crushing hits.
+
+1.3 (1/14/14):
+   * Fixed the Group and Raid channels - events could happen before it was possible to figure out the group type.
+   * Added the Automatic event.
+
+1.2 (1/13/14):
+   * Each reaction now has a combat option that sets when it can be used (any time, in combat, or out of combat).
+   * Each reaction now has a form/stance option that sets which form/stance you must be in to use it.
+   * Using ctrl-enter to create a new reaction will copy the settings of the one you're on instead of the one at the end.
+
+1.1 (1/12/14):
+   * Added a setting for individual reaction cooldowns.
+   * Added action types for people casting something on themselves.
+   * Added the <capture:#> variables for chat triggers.

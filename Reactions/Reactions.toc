@@ -1,0 +1,11 @@
+## Interface: 20400
+## Title: Reactions
+## Author: Pyralis
+## Version: 1.24
+## Notes: Automatically say or do things based on actions happening around you.
+## SavedVariablesPerCharacter: ReactionsSave
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## OptionalDeps: Data
+
+Reactions.lua

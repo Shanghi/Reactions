@@ -64,7 +64,7 @@
 			[7] = role item: nil or 1 to 10 - for ReactionsSave.roleItems[number]
 --]]
 
-local MINOR_VERSION = 24 -- minor version number - major is always 1
+local MINOR_VERSION = 24.1 -- minor version number - major is always 1
 
 ReactionsSave = nil -- saved settings - defaults set up during ADDON_LOADED event
 
@@ -2189,7 +2189,7 @@ local function SetDefaultSettings()
 	if mainSettings.roleItems        == nil then mainSettings.roleItems        = {}    end
 	if mainSettings.history          == nil then mainSettings.history          = {}    end
 
-	local chatList = ReactionsSave.chatList
+	chatList = ReactionsSave.chatList
 	if chatList["trigger"] == nil then chatList["trigger"] = {} end
 	if chatList["channel"] == nil then chatList["channel"] = {} end
 	if chatList.channel["Action"]       == nil then chatList.channel["Action"]       = {} end

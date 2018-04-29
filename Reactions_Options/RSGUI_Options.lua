@@ -461,7 +461,7 @@ function RSGUI.options:Update()
 		chatCount = chatCount + 1
 	end
 
-	self.textStatistics:SetText(string.format("Version 1.%d\n%d spell%s and %d event%s watched\n%d action%s with %d total reaction%s\n%d chat trigger%s\n%d tag%s",
+	self.textStatistics:SetText(string.format("Version 1.%.1f\n%d spell%s and %d event%s watched\n%d action%s with %d total reaction%s\n%d chat trigger%s\n%d tag%s",
 		self.main.settings.version,
 		spellCount,    (spellCount    == 1 and "" or "s"),
 		eventCount,    (eventCount    == 1 and "" or "s"),

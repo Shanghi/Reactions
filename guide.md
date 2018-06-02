@@ -123,7 +123,8 @@ You can have any amount of reactions for each action type. When one is used, it 
   - Group leader/assistant and Master Looter checking is only done when in a group.
   - The mob type (humanoid/critter/demon) only works for English clients.
   - "While at low/medium/high health/power" uses the values set in the options.
-  - Most information about someone (like race or creature type) won't be known unless they're in your group, you see them as a target, focus, or mouseover unit, or your pet or the group member involved in the action is targeting them. Except for guild/friend conditions (since those can always be checked), if any others about the target are disallowed then they'll automatically be disqualified if their information isn't known.
+  - Most information about someone (like race or creature type) won't be known unless they're in your group, you see them as a target, focus, or mouseover unit, or your pet or the group member involved in the action is targeting them.
+    If a condition can't find the information it needs, that reaction won't be used. Some things will always be known, like guild and friend conditions or if a caster is friendly/neutral/hostile.
 
 * **Required equipment button:** The fourth icon lets you pick an item from the "role items" (set up in the options) that require you to be wearing it for the reaction to be allowed to happen. It won't be shown if no role items are set.
 
@@ -575,13 +576,3 @@ Here are some work-arounds for problems or techniques that may not be obvious.
 
 If you wanted to be more specific and use subzones too, you could use the "Changed Subzone" event instead, and for the Spell/Event reaction use: `<zone>-<subzone>`<br/>
 Then make spells like: `Black Temple-Halls of Anguish`
-
----
-## How to use a reaction only if information (like their class or gender) is known:
-
-
-If you try to use **`<target_race>`** but no one is looking at them, you'll get a generic replacement as the race since it couldn't be discovered. If you'd rather not do the reaction at all in these cases, then click the Allowed Conditions beside the reaction line and uncheck something useless.
-
-For example, for an attack spell you could uncheck "Target (All) > Target is friendly" because you can't attack a friendly target anyway. If information about the target can't be found, then it can't be sure if it's friendly or not so will not do the reaction just in case.
-
-The friend list/guild member conditions are special cases that can always be checked, so don't use those for this.

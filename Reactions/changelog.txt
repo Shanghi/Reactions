@@ -1,3 +1,8 @@
+1.25 (6/2/18):
+	* Fixed checking reaction conditions when information isn't known about a unit.
+	* Added conditions for whether a person is on /focus or not.
+	* Changed reaction conditions to be able to detect if someone is friendly/neutral/hostile in some cases without anyone having to target them.
+
 1.24 (4/9/18):
 	* Added a search panel where you can search for text in your reactions/tags and either go to them or just edit them there.
 	* Added a history button [<] to show the last 10 things opened.

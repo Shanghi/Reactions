@@ -64,7 +64,7 @@
 			[7] = role item: nil or 1 to 10 - for ReactionsSave.roleItems[number]
 --]]
 
-local MINOR_VERSION = 24.1 -- minor version number - major is always 1
+local MINOR_VERSION = 25 -- minor version number - major is always 1
 
 ReactionsSave = nil -- saved settings - defaults set up during ADDON_LOADED event
 
@@ -94,6 +94,7 @@ local gmatch  = string.gmatch
 local tinsert = table.insert
 local tremove = table.remove
 local tconcat = table.concat
+local bitband = bit.band
 	-- settings
 local mainSettings            = nil
 local groupList               = nil
@@ -1276,11 +1277,11 @@ local function CheckUnitConditions(conditionTable, name, prefix)
 		targetIsNpc = (not UnitIsPlayer(unitid))
 
 		if UnitIsEnemy("player", unitid) then
-			if conditionTable[prefix.."Hostile"] then return false end
+			if conditionTable[prefix.."HostileReaction"] then return false end
 		elseif UnitCanAttack("player", unitid) then
-			if conditionTable[prefix.."Neutral"] then return false end
+			if conditionTable[prefix.."NeutralReaction"] then return false end
 		else
-			if conditionTable[prefix.."Friendly"] then return false end
+			if conditionTable[prefix.."FriendlyReaction"] then return false end
 		end
 
 		if not targetIsNpc then
@@ -1317,6 +1318,25 @@ local function CheckUnitConditions(conditionTable, name, prefix)
 		 or (sex == 1 and conditionTable[prefix.."SexUnknown"]) then
 			return false
 		end
+	else
+		local flags = (name == eventData.sourceName and eventData.sourceFlags) or (name == eventData.destName and eventData.destFlags) or nil
+		if flags then
+			-- special cases where a caster's hostility can be found without anyone looking at them
+			if bitband(flags, COMBATLOG_OBJECT_REACTION_FRIENDLY) > 0 then
+				if conditionTable[prefix.."FriendlyReaction"] then return false end
+			elseif bitband(flags, COMBATLOG_OBJECT_REACTION_HOSTILE) > 0 then
+				if conditionTable[prefix.."HostileReaction"] then return false end
+			else
+				if conditionTable[prefix.."NeutralReaction"] then return false end
+			end
+		end
+	end
+
+	-- focus conditions
+	if UnitExists("focus") and UnitName("focus") == name then
+		if conditionTable[prefix.."Focus"] then return false end
+	else
+		if conditionTable[prefix.."NotFocus"] then return false end
 	end
 
 	-- friend/guild conditions
@@ -1357,13 +1377,13 @@ local function CheckUnitConditions(conditionTable, name, prefix)
 		end
 	end
 
-	-- if information wasn't known about them, disqualify them if they have any flags besides the
-	-- guild and friends ones
+	-- if information wasn't known about them, disqualify them
 	if not unitid then
-		local search, exception1, exception2 = "^"..prefix..".", "Guild$", "Friend$"
+		local search = "^"..prefix.."."
+		local exception1, exception2, exception3, exception4 = "Guild$", "Friend$", "Reaction$", "Focus$"
 		for k in pairs(conditionTable) do
 			k = tostring(k)
-			if (k:find(search)) and not (k:find(exception1)) and not (k:find(exception2)) then
+			if (k:find(search)) and not (k:find(exception1)) and not (k:find(exception2)) and not (k:find(exception3)) and not (k:find(exception4)) then
 				return false
 			end
 		end
@@ -2156,6 +2176,32 @@ local function UpgradeSettings()
 			end
 		end
 	end -- end 1.23 upgrade
+
+	-- 1.25 upgrade: rename hostile/neutral/friendly conditions for caster/target
+	if mainSettings.version < 25 then
+		local flagNames = {"CasterHostile", "CasterNeutral", "CasterFriendly", "TargetHostile", "TargetNeutral", "TargetFriendly"}
+		local reaction
+		for spellKey,spellValue in pairs(reactionList) do -- Spell/Event
+			for actionKey,actionValue in pairs(spellValue) do -- actions
+				if type(actionValue) == "table" then -- looking for you_hit/you_miss/etc action tables, not other settings
+					local actionReactions = actionValue["reactions"]
+					if actionReactions then
+						for i=1,#actionReactions do -- reaction list for the action
+							reaction = actionReactions[i]
+							if reaction[6] then
+								for i=1,6 do
+									if reaction[6][flagNames[i]] then
+										reaction[6][flagNames[i].."Reaction"] = reaction[6][flagNames[i]]
+										reaction[6][flagNames[i]] = nil
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
 end
 
 local function SetDefaultSettings()
@@ -2475,6 +2521,10 @@ eventData.isDead                = nil   -- if the player is currently dead
 eventData.followingPlayer       = nil   -- the name of the character the player is following
 eventData.pendingGroupJoinName  = nil   -- the name of someone joining the group (only if the chat message comes before them actually joining)
 eventData.pendingGroupLeaveName = nil   -- the name of someone leaving the group (only if the chat message comes before they actually leave)
+eventData.sourceFlags           = nil   -- the sourceFlags in the last combat event
+eventData.sourceName            = nil   -- the sourceName in the last combat event
+eventData.destFlags             = nil   -- the destFlags in the last combat event
+eventData.destName              = nil   -- the destName in the last combat event
 eventData.playerSpellEffects = {        -- counters of how many of each type of spell effect is on the player
 	[1]  = 0, -- 12:stun + 14:knockout
 	[2]  = 0, -- 5:fear + 24:horror + 23:turn
@@ -3077,7 +3127,6 @@ local RAID_STRING_JOINED  = "^"..ERR_RAID_MEMBER_ADDED_S:gsub("%%s", "(%%S+)")
 local RAID_STRING_LEFT    = "^"..ERR_RAID_MEMBER_REMOVED_S:gsub("%%s", "(%%S+)")
 -- other localized text
 local ERR_DUEL_REQUESTED  = ERR_DUEL_REQUESTED
-local LIFEBLOOM           = (GetSpellInfo(33763))
 
 -- Using all these arg1/arg2/etc parameters instead of ... and select() gives a small but measurable
 -- performance increase - the same with using all the "if event == something" instead of a table of
@@ -3085,6 +3134,7 @@ local LIFEBLOOM           = (GetSpellInfo(33763))
 -- performance gain, but in a big addon like this that's constantly checking things I'd rather have
 -- the performance!
 local function Reactions_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16, arg17, arg18, arg19, arg20)
+
 	--------------------------------------------------
 	-- new combat event
 	--------------------------------------------------
@@ -3093,12 +3143,18 @@ local function Reactions_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6
 		-- arg2 = action
 		-- arg3 = sourceGUID (unused)
 		-- arg4 = sourceName
-		-- arg5 = sourceFlags (unused)
+		-- arg5 = sourceFlags
 		-- arg6 = destGUID
 		-- arg7 = destName
-		-- arg8 = destFlags (unused)
+		-- arg8 = destFlags
 		-- arg9 = spellId unless noted
 		-- arg10 = spellName unless noted
+
+		local eventData = eventData
+		eventData.sourceName  = arg4
+		eventData.sourceFlags = arg5
+		eventData.destName  = arg7
+		eventData.destFlags = arg8
 
 		-- normal attack
 		if arg2 == "SWING_DAMAGE" or arg2 == "RANGE_DAMAGE" then
@@ -3115,7 +3171,7 @@ local function Reactions_OnEvent(self, event, arg1, arg2, arg3, arg4, arg5, arg6
 		-- handle spells that do damage/healing when hitting - both instant and cast-time spells
 		if arg2 == "SPELL_DAMAGE" or arg2 == "SPELL_HEAL" then
 			-- arg12 = amount
-			if arg12 > 0 and arg10 ~= LIFEBLOOM then -- lifebloom's end triggers this - ignore it
+			if arg12 > 0 and arg9 ~= 33763 then -- 33763 = lifebloom: the end triggers this so ignore it
 				local critical, glancing, crushing, hitType
 				if arg2 == "SPELL_DAMAGE" then
 					if     arg17 then hitType = "Critical"

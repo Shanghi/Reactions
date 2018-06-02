@@ -1362,6 +1362,7 @@ local function CheckUnitConditions(conditionTable, name, prefix)
 	if not unitid then
 		local search, exception1, exception2 = "^"..prefix..".", "Guild$", "Friend$"
 		for k in pairs(conditionTable) do
+			k = tostring(k)
 			if (k:find(search)) and not (k:find(exception1)) and not (k:find(exception2)) then
 				return false
 			end

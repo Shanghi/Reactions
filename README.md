@@ -16,7 +16,7 @@ You can react to many types of actions:
 
 Each action can have any amount of reactions and a random one will be chosen.
 * Reacting can have a chance set so that it won't happen 100% of the time.
-* After reacting, there's a global cooldown time before another reaction will be used. Each action can override this to have its own time (or no cooldown at all). You can limit them other ways to like to only let it happen every 20 fights.
+* After reacting, there's a global cooldown time before another reaction will be used. Each action can override this to have its own time (or no cooldown at all). You can limit them other ways too like to only let it happen every 20 fights.
 * Each individual reaction can have many conditions set, like to only be picked if it's morning time in a battleground while you're in cat form wearing a specific item and the spell you used critically hit a gnome.
 * Reactions can be chat messages, non-protected commands like /invite, scripts, or a mix of all. Messages can use variables like the target's name, custom tags you can make like {race} to pick a random race from a list, and randomized text like "There were (two|three|four) of them!" You can do multiple things at once (like say something then use /sleep) and optionally have pauses between each thing (which can have specific or random times).
 

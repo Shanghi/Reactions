@@ -168,7 +168,6 @@ You can create a "spell" of any name to use manually in macros. It uses the "You
 Reacting to events is the same as reacting to a spell. Since events are pre-made with all their capabilities known, their Actions dropdown will only show what's possible to detect. If you use [Delete] on an event, it will delete all its action settings but will stay on the Events list.
 
 * The Targeting events only happen if they're in the range where you can inspect someone.
-* Incapacitated/Silence events rely on spell lists, so some may be missing (especially old ones).
 * Below, [T] means that the **`<target_name>`** variable (and **`<group_name>`**/etc if applicable) will work.
 
 

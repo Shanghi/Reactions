@@ -1,7 +1,7 @@
 ## Interface: 20400
 ## Title: Reactions (Options)
 ## Author: Pyralis
-## Version: 1.25
+## Version: 1.25.1
 ## Notes: The options window for Reactions - this only loads when you open it with /reactions or /rs.
 ## DefaultState: Enabled
 ## LoadOnDemand: 1

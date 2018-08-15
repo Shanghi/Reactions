@@ -64,7 +64,7 @@
 			[7] = role item: nil or 1 to 10 - for ReactionsSave.roleItems[number]
 --]]
 
-local MINOR_VERSION = 25 -- minor version number - major is always 1
+local MINOR_VERSION = 25.1 -- minor version number - major is always 1
 
 ReactionsSave = nil -- saved settings - defaults set up during ADDON_LOADED event
 

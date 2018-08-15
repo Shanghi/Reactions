@@ -82,8 +82,8 @@ local function InputReceiveItem(options, index)
 		end
 
 		options.main.settings.roleItems[index] = {name, tonumber(id), texture, slot1, slot2}
+		options.main.content.reactions:CreateRoleItemMenu()
 		SetItemButtonTexture(options.roleItems[index], texture)
-		--CreateRoleItemMenu()
 	end
 end
 
@@ -109,8 +109,8 @@ local function CreateRoleItemFrame(options, index)
 		elseif button == "RightButton" then
 			SetItemButtonTexture(self, nil)
 			options.main.settings.roleItems[index] = nil
+			options.main.content.reactions:CreateRoleItemMenu()
 			GameTooltip:Hide()
-			--CreateRoleItemMenu()
 		end
 	end)
 
